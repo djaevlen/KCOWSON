@@ -106,15 +106,20 @@
                 var accounted = shuffle(accounted_checked);
             }
 
-            console.log(accounted);
-
-
-
+            // console.log(accounted);
 
             // Check if not even number of persons and then add last person double
             if (!isEven(accounted.length)) {
-                var last_person = accounted[accounted.length - 1];
-                accounted.push(last_person);
+
+                var random_person = Math.floor(Math.random() * accounted.length);
+                if (!isEven(random_person)) {
+                    // var last_person = accounted[accounted.length - 1];
+                    // accounted.push(last_person);
+                    accounted.splice(random_person - 1, 0, accounted[random_person - 1]);
+                } else {
+                    accounted.splice(random_person, 0, accounted[random_person]);
+                }
+                //console.log(random_person);
             }
 
             // Created turn value
