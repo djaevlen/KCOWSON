@@ -40,8 +40,8 @@
                     </div>
                 </form>
             </div>
-            <div class="col-12 col-lg-1"></div>
-            <div class="col-12 col-md-6 col-lg-5">
+            <div class="col-12 col-lg-1 spacer d-none"></div>
+            <div class="col-12 col-md-6 col-lg-5 result-wrapper d-none">
                 <div class="result">
 
                 </div>
@@ -94,6 +94,7 @@
 
             // Empty result list
             $('.result').html('');
+            $('.result-wrapper, .spacer').removeClass('d-none');
 
             if (first_checked) {
                 // Remove first person from accounted people
