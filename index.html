@@ -13,18 +13,24 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-6 col-lg-4">
                 <form action="/" id="generator">
-                    <div class="row persons mb-3">
-                        <div class="col-6 d-flex align-items-center flex-column">
-                            <div class="persons-col-1">
+                    <table class="table table-borderless ">
+                        <thead>
+                            <tr>
+                                <th class="small" width="50%">
+                                    Navn
+                                </th>
+                                <th class="small text-center" width="20%">
+                                    Første
+                                </th>
+                                <th class="small text-center" width="30%">
+                                    Til stede
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                            </div>
-                        </div>
-                        <div class="col-6 d-flex align-items-center flex-column">
-                            <div class="persons-col-2">
-
-                            </div>
-                        </div>
-                    </div>
+                        </tbody>
+                    </table>
                     <div class="row mb-3">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-primary btn-sm">
@@ -81,27 +87,46 @@
             }
         ];
 
-        function generate_results(checked) {
+        function generate_results(accounted_checked, first_checked) {
 
             // Empty result list
             $('.result').html('');
 
-            shuffle(checked);
+            if (first_checked) {
+                // Remove first person from accounted people
+                var accounted = accounted_checked.filter(function (e) { return e !== first_checked });
 
-            // Check if not even number of persons and then add last person double
-            if (!isEven(checked.length)) {
-                var last_person = checked[checked.length - 1];
-                checked.push(last_person);
+                // Shuffle array
+                shuffle(accounted);
+
+                // Place first at shuffled array
+                accounted.unshift(first_checked);
+            } else {
+                // Shuffle array
+                var accounted = shuffle(accounted_checked);
             }
 
+            console.log(accounted);
+
+
+
+
+            // Check if not even number of persons and then add last person double
+            if (!isEven(accounted.length)) {
+                var last_person = accounted[accounted.length - 1];
+                accounted.push(last_person);
+            }
+
+            // Created turn value
             var turn = 1;
 
             // Insert result into HTML
-            checked.forEach(function (id, index) {
+            accounted.forEach(function (id, index) {
 
                 if (!isEven(index)) {
                     return;
                 }
+
                 // Insert row with a pair of persons
                 $('.result').append(
                     '<div class="row position-relative border border-2 rounded-3 p-3 pb-2 mb-3">' +
@@ -111,16 +136,14 @@
                     '</div>' +
                     '<div class="col-4 small fw-bold text-nowrap text-center pt-4 text-secondary">Par ' + turn + '</div>' +
                     '<div class="col-4 fw-bold text-center d-flex flex-column align-items-center text-nowrap">' +
-                    '<img class="rounded-pill mb-2" src="' + get_person(checked[index + 1]).image + '" width="64" height="64" />' +
-                    get_person(checked[index + 1]).name +
+                    '<img class="rounded-pill mb-2" src="' + get_person(accounted[index + 1]).image + '" width="64" height="64" />' +
+                    get_person(accounted[index + 1]).name +
                     '</div>' +
                     '</div>'
                 );
                 turn++;
             });
-
         }
-
 
 
         $(function () {
@@ -129,21 +152,25 @@
             persons.forEach(function (element) {
 
                 // Determine what column to insert person into
-                var selector = '.persons .persons-col-1';
-                if (!isEven(element.id)) {
-                    var selector = '.persons .persons-col-2';
-                }
+                var selector = 'table tbody';
+
+                console.log(element.id);
+
+                var checked_first = element.id == '0' ? 'checked' : '';
 
                 // Insert person into column
                 $(selector).append(
-                    '<div class="d-flex flex-column align-items-start">' +
-                    '<div class="form-check">' +
-                    '<input class="form-check-input" type="checkbox" value="' + element.id + '" id="' + element.id + '" checked />' +
-                    '<label class="form-check-label fw-bold mb-2" for="' + element.id + '">' +
+                    '<tr>' +
+                    '<td>' +
                     element.name +
-                    '</label>' +
-                    '</div>' +
-                    '</div>'
+                    '</td>' +
+                    '<td class="text-center">' +
+                    '<input class="form-check-input first" type="radio" name="first" value="' + element.id + '" id="first_' + element.id + '" ' + checked_first + ' />' +
+                    '</td>' +
+                    '<td class="text-center">' +
+                    '<input class="form-check-input accounted" type="checkbox" name="accounted" value="' + element.id + '" id="accounted_' + element.id + '" checked />' +
+                    '</td>' +
+                    '</tr>'
                 );
             });
 
@@ -151,14 +178,30 @@
             $('#generator').submit(function (event) {
                 event.preventDefault();
 
-                var inputs = event.target.elements;
-                var checked = [];
-                for (i = 0; i < inputs.length; i++) {
-                    if (inputs[i].checked) {
-                        checked.push(inputs[i].value);
+                // Accounted for input values
+                var accounted_inputs = event.target.elements.accounted;
+                var accounted_checked = [];
+                for (i = 0; i < accounted_inputs.length; i++) {
+                    if (accounted_inputs[i].checked) {
+                        accounted_checked.push(accounted_inputs[i].value);
                     }
                 }
-                generate_results(checked);
+                console.log(accounted_checked);
+
+
+                // First for input values
+                var first_inputs = event.target.elements.first;
+                var first_checked = [];
+                for (i = 0; i < first_inputs.length; i++) {
+                    if (first_inputs[i].checked) {
+                        first_checked.push(first_inputs[i].value);
+                    }
+                }
+
+                generate_results(
+                    accounted_checked,
+                    first_checked[0]
+                );
             });
 
 
@@ -197,6 +240,18 @@
         function isEven(n) {
             return n % 2 == 0;
         }
+
+        $(document).ready(function () {
+            $('.accounted').change(function () {
+                console.log(this.value);
+                if (!this.checked) {
+                    $('#first_' + this.value).hide();
+                    $('#first_' + this.value).prop("checked", false);
+                } else {
+                    $('#first_' + this.value).show();
+                }
+            });
+        });
 
 
     </script>
