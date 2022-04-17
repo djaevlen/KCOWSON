@@ -11,7 +11,7 @@
 <body class="p-3">
     <div class="container mb-5">
         <div class="row justify-content-center">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-5">
                 <form action="/" id="generator">
                     <table class="table table-borderless ">
                         <thead>
@@ -38,10 +38,13 @@
                             </button>
                         </div>
                     </div>
-                    <div class="result">
-
-                    </div>
                 </form>
+            </div>
+            <div class="col-12 col-lg-1"></div>
+            <div class="col-12 col-md-6 col-lg-5">
+                <div class="result">
+
+                </div>
             </div>
         </div>
     </div>
@@ -139,7 +142,7 @@
                     '<img class="rounded-pill mb-2" src="' + get_person(id).image + '" width="64" height="64" />' +
                     get_person(id).name +
                     '</div>' +
-                    '<div class="col-4 small fw-bold text-nowrap text-center pt-4 text-secondary">Par ' + turn + '</div>' +
+                    '<div class="col-4 small fw-bold text-nowrap text-center pt-4 fw-bold">Par ' + turn + '</div>' +
                     '<div class="col-4 fw-bold text-center d-flex flex-column align-items-center text-nowrap">' +
                     '<img class="rounded-pill mb-2" src="' + get_person(accounted[index + 1]).image + '" width="64" height="64" />' +
                     get_person(accounted[index + 1]).name +
